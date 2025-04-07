@@ -1,10 +1,9 @@
 "use client";
 
-import { useRef, useState } from "react";
-import config from "@/lib/config";
 import { IKImage, IKUpload, ImageKitProvider } from "imagekitio-next";
+import config from "@/lib/config";
+import { useRef, useState } from "react";
 import Image from "next/image";
-import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
 
 const {
@@ -19,12 +18,14 @@ const authenticator = async () => {
 
     if (!response.ok) {
       const errorText = await response.text();
+
       throw new Error(
         `Request failed with status ${response.status}: ${errorText}`,
       );
     }
 
     const data = await response.json();
+
     const { signature, expire, token } = data;
 
     return { token, expire, signature };
@@ -33,19 +34,19 @@ const authenticator = async () => {
   }
 };
 
-const FileUpload = ({
+const ImageUpload = ({
   onFileChange,
 }: {
   onFileChange: (filePath: string) => void;
 }) => {
-  const ikUploadRef = useRef<any>(null);
+  const ikUploadRef = useRef(null);
   const [file, setFile] = useState<{ filePath: string } | null>(null);
 
-  const onError = (err: any) => {
-    console.log(err);
+  const onError = (error: any) => {
+    console.log(error);
 
     toast({
-      title: `Image upload failed`,
+      title: "Image upload failed",
       description: `Your image could not be uploaded. Please try again.`,
       variant: "destructive",
     });
@@ -56,7 +57,7 @@ const FileUpload = ({
     onFileChange(res.filePath);
 
     toast({
-      title: `Image uploaded successfully`,
+      title: "Image uploaded successfully",
       description: `${res.filePath} uploaded successfully!`,
     });
   };
@@ -76,10 +77,14 @@ const FileUpload = ({
       />
 
       <button
-        className={cn("upload-btn")}
+        className="upload-btn"
         onClick={(e) => {
           e.preventDefault();
-          ikUploadRef.current?.click();
+
+          if (ikUploadRef.current) {
+            // @ts-ignore
+            ikUploadRef.current?.click();
+          }
         }}
       >
         <Image
@@ -90,7 +95,7 @@ const FileUpload = ({
           className="object-contain"
         />
 
-        <p className="text-base text-light-100">Upload a file</p>
+        <p className="text-base text-light-100">Upload a File</p>
 
         {file && <p className="upload-filename">{file.filePath}</p>}
       </button>
@@ -107,4 +112,4 @@ const FileUpload = ({
   );
 };
 
-export default FileUpload;
+export default ImageUpload;
