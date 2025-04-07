@@ -1,3 +1,5 @@
+export const runtime = "nodejs"; // ✅ Force Node.js runtime
+
 import NextAuth, { User } from "next-auth";
 import { compare } from "bcryptjs";
 import CredentialsProvider from "next-auth/providers/credentials";
